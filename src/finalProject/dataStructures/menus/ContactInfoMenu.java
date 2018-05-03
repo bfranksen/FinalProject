@@ -79,6 +79,7 @@ public class ContactInfoMenu {
                 mainMenu.run();
                 break;
             case 6:
+                mainMenu.writeDataToFile();
                 System.out.println("Goodbye!");
                 System.exit(0);
                 break;

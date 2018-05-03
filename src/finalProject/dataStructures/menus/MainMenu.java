@@ -3,8 +3,7 @@ package finalProject.dataStructures.menus;
 import finalProject.dataStructures.ConsoleColors;
 import finalProject.dataStructures.patient.*;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.LinkedList;
 import java.util.Scanner;
 
@@ -38,7 +37,7 @@ public class MainMenu {
     }
 
     private void initiatePrebuiltLists() {
-        File patientFile = new File("C:\\Users\\Braden\\IdeaProjects\\datastructures-finalproject\\src\\Patient List");
+        File patientFile = new File("src/Patient List");
         Scanner reader = null;
         try {
             reader = new Scanner(patientFile);
@@ -86,13 +85,33 @@ public class MainMenu {
         }
     }
 
+    public void writeDataToFile() {
+        try (Writer writer = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream("src/Patient List"), "utf-8"))) {
+            writer.write("Contact\n");
+            for (Patient p : patientLinkedList) {
+                writer.write(p.getFirstName() + " " + p.getLastName() + " " + p.getPatientContactInfo().getPhoneNumber() + " " + p.getPatientContactInfo().getEmailAddress() + "\n");
+            }
+            writer.write("Organ\n");
+            for (Patient p : organTransplantMenu.getPatientOrganLinkedList()) {
+                writer.write(p.getFirstName() + " " + p.getLastName() + " " + p.getPatientOrganInfo().getOrgan() + " " + p.getPatientOrganInfo().getUrgency() + "\n");
+            }
+            writer.write("Blood\n");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void run() {
         while (menuOptions()) {
             menuOptions();
         }
         in.close();
     }
-
 
     private boolean menuOptions() {
         try {
@@ -131,6 +150,7 @@ public class MainMenu {
                 roomSchedulerMenu.run();
                 break;*/
             case 5:
+                writeDataToFile();
                 System.out.println("Goodbye!");
                 System.exit(0);
         }
@@ -162,14 +182,6 @@ public class MainMenu {
     public LinkedList<Patient> getPatientLinkedList() {
         return patientLinkedList;
     }
-
-    /*public PatientQuickSort getPatientQuickSort() {
-        return patientQuickSort;
-    }
-
-    public PatientBinarySearch getPatientBinarySearch() {
-        return patientBinarySearch;
-    }*/
 
     public ContactInfoMenu getContactInfoMenu() {
         return contactInfoMenu;

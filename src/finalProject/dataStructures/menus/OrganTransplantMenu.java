@@ -79,6 +79,7 @@ public class OrganTransplantMenu {
                 mainMenu.run();
                 break;
             case 7:
+                mainMenu.writeDataToFile();
                 System.out.println("Goodbye!");
                 System.exit(0);
                 break;
