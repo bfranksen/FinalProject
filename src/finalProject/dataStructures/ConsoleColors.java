@@ -1,8 +1,8 @@
-package mini.dataStructures;
+package finalProject.dataStructures;
 
 /****************************************
- *     MiniProject
- *     mini.dataStructures
+ *     FinalProject
+ *     finalProject.dataStructures
  *     Created by Braden
  *     3/19/2018
  ****************************************/

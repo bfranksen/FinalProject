@@ -1,10 +1,10 @@
-package mini.dataStructures;
+package finalProject.dataStructures.patient;
 
 import java.util.LinkedList;
 
 /********************************************************
- *     MiniProject
- *     mini.dataStructures
+ *     FinalProject
+ *     finalProject.dataStructures
  *     Created by Braden, Aaron, Janveer, Saba
  *     3/14/2018
  *******************************************************/
@@ -59,6 +59,50 @@ public class PatientBinarySearch {
         return holder;
     }
 
+    public LinkedList<Integer> bSearchPhoneNumber(LinkedList<Patient> list, long phoneNumber, int left, int right) {
+
+        holder.clear();
+        patientQuickSort.quickSortPhoneNumber(list, left, right);
+
+        long search = phoneNumber;
+        int pointer = (left + right) / 2;
+
+        if (left < right - 1) {
+            if (list.get(pointer).getPatientContactInfo().getPhoneNumber() == search) {
+                holder.add(pointer);
+                for (int i = pointer - 1; i >= left; i--) {
+                    if (list.get(i).getPatientContactInfo().getPhoneNumber() == search) {
+                        holder.add(i);
+                    } else {
+                        i = left;
+                    }
+                }
+                for (int i = pointer + 1; i <= right; i++) {
+                    if (list.get(i).getPatientContactInfo().getPhoneNumber() == search) {
+                        holder.add(i);
+                    } else {
+                        i = right;
+                    }
+                }
+                return holder;
+            } else if (list.get(pointer).getPatientContactInfo().getPhoneNumber() < search) {
+                bSearchPhoneNumber(list, phoneNumber, pointer, right);
+            } else {
+                bSearchPhoneNumber(list, phoneNumber, left, pointer);
+            }
+        } else if (pointer == list.size() - 2) {
+            pointer = list.size() - 1;
+            if (list.get(pointer).getPatientContactInfo().getPhoneNumber() == search) {
+                holder.add(pointer);
+            }
+        } else {
+            pointer = 0;
+            if (list.get(pointer).getPatientContactInfo().getPhoneNumber() == search) {
+                holder.add(pointer);
+            }
+        }
+        return holder;
+    }
 
     public LinkedList<Integer> bSearchUrgency(LinkedList<Patient> list, int urgency, int left, int right) {
 
@@ -69,41 +113,42 @@ public class PatientBinarySearch {
         int pointer = (left + right) / 2;
 
         if (left < right - 1) {
-            if (list.get(pointer).getUrgency() == search) {
+            if (list.get(pointer).getPatientOrganInfo().getUrgency() == search) {
                 holder.add(pointer);
                 for (int i = pointer - 1; i >= left; i--) {
-                    if (list.get(i).getUrgency() == search) {
+                    if (list.get(i).getPatientOrganInfo().getUrgency() == search) {
                         holder.add(i);
                     } else {
                         i = left;
                     }
                 }
                 for (int i = pointer + 1; i <= right; i++) {
-                    if (list.get(i).getUrgency() == search) {
+                    if (list.get(i).getPatientOrganInfo().getUrgency() == search) {
                         holder.add(i);
                     } else {
                         i = right;
                     }
                 }
                 return holder;
-            } else if (list.get(pointer).getUrgency() < search) {
+            } else if (list.get(pointer).getPatientOrganInfo().getUrgency() < search) {
                 bSearchUrgency(list, urgency, pointer, right);
             } else {
                 bSearchUrgency(list, urgency, left, pointer);
             }
         } else if (pointer == list.size() - 2) {
             pointer = list.size() - 1;
-            if (list.get(pointer).getUrgency() == search) {
+            if (list.get(pointer).getPatientOrganInfo().getUrgency() == search) {
                 holder.add(pointer);
             }
         } else {
             pointer = 0;
-            if (list.get(pointer).getUrgency() == search) {
+            if (list.get(pointer).getPatientOrganInfo().getUrgency() == search) {
                 holder.add(pointer);
             }
         }
         return holder;
     }
+
 
     public LinkedList<Integer> bSearchOrgan(LinkedList<Patient> list, String organ, int left, int right) {
 
@@ -114,36 +159,36 @@ public class PatientBinarySearch {
         int pointer = (left + right) / 2;
 
         if (left < right - 1) {
-            if (list.get(pointer).getOrgan().compareToIgnoreCase(search) == 0) {
+            if (list.get(pointer).getPatientOrganInfo().getOrgan().compareToIgnoreCase(search) == 0) {
                 holder.add(pointer);
                 for (int i = pointer - 1; i >= left; i--) {
-                    if (list.get(i).getOrgan().compareToIgnoreCase(search) == 0) {
+                    if (list.get(i).getPatientOrganInfo().getOrgan().compareToIgnoreCase(search) == 0) {
                         holder.add(i);
                     } else {
                         i = left;
                     }
                 }
                 for (int i = pointer + 1; i <= right; i++) {
-                    if (list.get(i).getOrgan().compareToIgnoreCase(search) == 0) {
+                    if (list.get(i).getPatientOrganInfo().getOrgan().compareToIgnoreCase(search) == 0) {
                         holder.add(i);
                     } else {
                         i = right;
                     }
                 }
                 return holder;
-            } else if (list.get(pointer).getOrgan().compareToIgnoreCase(search) < 0) {
+            } else if (list.get(pointer).getPatientOrganInfo().getOrgan().compareToIgnoreCase(search) < 0) {
                 bSearchOrgan(list, organ, pointer, right);
             } else {
                 bSearchOrgan(list, organ, left, pointer);
             }
         } else if (pointer == list.size() - 2) {
             pointer = list.size() - 1;
-            if (list.get(pointer).getOrgan().compareToIgnoreCase(search) == 0) {
+            if (list.get(pointer).getPatientOrganInfo().getOrgan().compareToIgnoreCase(search) == 0) {
                 holder.add(pointer);
             }
         } else {
             pointer = 0;
-            if (list.get(pointer).getOrgan().compareToIgnoreCase(search) == 0) {
+            if (list.get(pointer).getPatientOrganInfo().getOrgan().compareToIgnoreCase(search) == 0) {
                 holder.add(pointer);
             }
         }
