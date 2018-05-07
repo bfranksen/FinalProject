@@ -1,6 +1,6 @@
-package finalProject.dataStructures.patient;
+package dataStructures.finalProject.patient;
 
-import finalProject.dataStructures.ConsoleColors;
+import dataStructures.finalProject.utilities.ConsoleColors;
 
 /****************************************
  *     FinalProject

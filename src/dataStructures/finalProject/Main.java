@@ -1,6 +1,6 @@
-package finalProject.dataStructures;
+package dataStructures.finalProject;
 
-import finalProject.dataStructures.menus.MainMenu;
+import dataStructures.finalProject.menus.EmployeeLoginMenu;
 
 /********************************************************
  *     FinalProject
@@ -12,7 +12,7 @@ import finalProject.dataStructures.menus.MainMenu;
 public class Main {
 
     public static void main(String[] args) {
-        MainMenu mainMenu = new MainMenu();
-        mainMenu.run();
+        EmployeeLoginMenu employeeLoginMenu = new EmployeeLoginMenu();
+        employeeLoginMenu.run();
     }
 }

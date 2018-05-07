@@ -1,11 +1,12 @@
 
-package finalProject.dataStructures.menus;
+package dataStructures.finalProject.menus;
 
-import finalProject.dataStructures.ConsoleColors;
-import finalProject.dataStructures.patient.Patient;
-import finalProject.dataStructures.patient.PatientBinarySearch;
-import finalProject.dataStructures.patient.PatientContactInfo;
-import finalProject.dataStructures.patient.PatientQuickSort;
+import dataStructures.finalProject.utilities.Utils;
+import dataStructures.finalProject.patient.Patient;
+import dataStructures.finalProject.patient.PatientContactInfo;
+import dataStructures.finalProject.utilities.BinarySearch;
+import dataStructures.finalProject.utilities.ConsoleColors;
+import dataStructures.finalProject.utilities.QuickSort;
 
 import java.util.LinkedList;
 
@@ -20,15 +21,13 @@ import java.util.LinkedList;
 public class ContactInfoMenu {
 
     private MainMenu mainMenu;
-    private PatientQuickSort patientQuickSort;
-    private PatientBinarySearch patientBinarySearch;
-
-    private int id = 100;
+    private QuickSort QuickSort;
+    private BinarySearch binarySearch;
 
     public ContactInfoMenu(MainMenu mainMenu) {
         this.mainMenu = mainMenu;
-        this.patientQuickSort = new PatientQuickSort();
-        this.patientBinarySearch = new PatientBinarySearch();
+        this.QuickSort = new QuickSort();
+        this.binarySearch = new BinarySearch();
     }
 
     public void run() {
@@ -43,13 +42,14 @@ public class ContactInfoMenu {
             System.out.print(ConsoleColors.YELLOW_BOLD + "\n\n Patient Info\n--------------" + ConsoleColors.RESET);
             System.out.println(ConsoleColors.CYAN + "\nWhat would you like to do?" + ConsoleColors.RESET);
             System.out.println("\t1. Add Patient");
-            System.out.println("\t2. Update Contact Info");
-            System.out.println("\t3. View Patient(s)");
-            System.out.println("\t4. View Patient List");
-            System.out.println("\t5. Back to Main Menu");
-            System.out.println("\t6. Exit Program");
-            response = Integer.parseInt(MainMenu.in.next());
-            if (response < 1 || response > 6) {
+            System.out.println("\t2. Remove Patient");
+            System.out.println("\t3. Update Patient");
+            System.out.println("\t4. View Patient(s)");
+            System.out.println("\t5. View Patient List");
+            System.out.println("\t6. Back to Main Menu");
+            System.out.println("\t7. Exit Program");
+            response = Integer.parseInt(Utils.input.next());
+            if (response < 1 || response > 7) {
                 System.out.println(ConsoleColors.RED + "\n*** Not a valid command. Please try again. ***" + ConsoleColors.RESET);
             } else {
                 runOption(response);
@@ -67,19 +67,22 @@ public class ContactInfoMenu {
                 userAddPatient();
                 break;
             case 2:
-                updateContactInfo();
+                removePatient();
                 break;
             case 3:
-                viewPatient();
+                updateContactInfo();
                 break;
             case 4:
-                viewPatientList();
+                viewPatient();
                 break;
             case 5:
-                mainMenu.run();
+                viewPatientList();
                 break;
             case 6:
-                mainMenu.writeDataToFile();
+                mainMenu.run();
+                break;
+            case 7:
+                mainMenu.writePatientDataToFile();
                 System.out.println("Goodbye!");
                 System.exit(0);
                 break;
@@ -89,16 +92,16 @@ public class ContactInfoMenu {
     public Patient userAddPatient() {
         String firstName, lastName, phoneNumber, emailAddress, homeAddress;
         System.out.print("First Name: ");
-        firstName = MainMenu.in.next();
+        firstName = Utils.input.next();
         System.out.print("Last Name: ");
-        lastName = MainMenu.in.next();
-        MainMenu.in.nextLine();
+        lastName = Utils.input.next();
+        Utils.input.nextLine();
         System.out.print("Phone Number: ");
-        phoneNumber = MainMenu.in.nextLine();
+        phoneNumber = Utils.input.nextLine();
         System.out.print("Email Address: ");
-        emailAddress = MainMenu.in.nextLine();
+        emailAddress = Utils.input.nextLine();
         System.out.print("Home Address: ");
-        homeAddress = MainMenu.in.nextLine();
+        homeAddress = Utils.input.nextLine();
         Patient p = addPatient(firstName, lastName);
         p.setPatientContactInfo(new PatientContactInfo(convertPhoneNumberToLong(phoneNumber), emailAddress, homeAddress));
         System.out.println(ConsoleColors.YELLOW + "\n\t" + p.getFirstName() + " " + p.getLastName() + " added\n\t" +
@@ -107,10 +110,87 @@ public class ContactInfoMenu {
     }
 
     public Patient addPatient(String firstName, String lastName) {
-        Patient p = new Patient(id, firstName, lastName);
+        Patient p = new Patient(Utils.patIdPointer, firstName, lastName);
         mainMenu.getPatientLinkedList().add(p);
-        id++;
+        Utils.patIdPointer++;
         return p;
+    }
+
+    private Patient removePatient() {
+        int response;
+        System.out.println(ConsoleColors.CYAN + "\nThis action will remove the patient from the entire database. Continue?" + ConsoleColors.RESET);
+        System.out.println("\t1. Yes\n\t2. No");
+        try {
+            response = Integer.parseInt(Utils.input.next());
+            if (response == 1) {
+                // DO NOTHING! YAY
+            } else if (response == 2) {
+                System.out.println(ConsoleColors.YELLOW + "\n\tNo changes have been made." + ConsoleColors.RESET);
+                return null;
+            } else {
+                System.out.println(ConsoleColors.RED + "\n*** Not a valid command. Please try again. ***" + ConsoleColors.RESET);
+                return null;
+            }
+        } catch (NumberFormatException e) {
+            System.out.println(ConsoleColors.RED + "\n*** Not a valid input. Please try again. ***" + ConsoleColors.RESET);
+            return null;
+        }
+        LinkedList<Integer> searchResults = searchForPatient();
+        Patient[] removeCandidates = new Patient[searchResults.size()];
+        Patient removedPatient;
+
+        int tempPatientIndex;
+        int chosenPatient;
+
+        if (searchResults.size() == 0) {
+            removedPatient = null;
+        } else if (searchResults.size() == 1) {
+            removedPatient = mainMenu.getPatientLinkedList().get(searchResults.get(0));
+            if (Utils.doubleCheck(removedPatient, "remove")) {
+                mainMenu.getPatientLinkedList().remove(removedPatient);
+                mainMenu.getOrganTransplantMenu().getPatientOrganLinkedList().remove(removedPatient);
+                mainMenu.getBloodDonorMenu().getPatientBloodLinkedList().remove(removedPatient);
+                if (removedPatient != null)
+                    System.out.println(ConsoleColors.YELLOW + "\n\tPatient " + removedPatient.getFirstName() + " " + removedPatient.getLastName() + " has been removed from the database." + ConsoleColors.RESET);
+            } else {
+                removedPatient = null;
+                System.out.println(ConsoleColors.YELLOW + "\n\tNo changes have been made.");
+            }
+        } else {
+            while (true) {
+                tempPatientIndex = 0;
+                System.out.println(ConsoleColors.CYAN + "\nWhich patient would you like to remove?" + ConsoleColors.RESET);
+                for (Integer i : searchResults) {
+                    removeCandidates[tempPatientIndex] = mainMenu.getPatientLinkedList().get(i);
+                    System.out.println("\t" + (tempPatientIndex + 1) + ". " + removeCandidates[tempPatientIndex]);
+                    tempPatientIndex++;
+                }
+                try {
+                    chosenPatient = Integer.parseInt(Utils.input.next());
+                    if (chosenPatient < 1 || chosenPatient > tempPatientIndex) {
+                        System.out.println(ConsoleColors.RED + "\n*** Not a valid command. Please try again. ***" + ConsoleColors.RESET);
+                        continue;
+                    } else {
+                        removedPatient = removeCandidates[chosenPatient - 1];
+                        if (Utils.doubleCheck(removedPatient, "remove")) {
+                            mainMenu.getPatientLinkedList().remove(removedPatient);
+                            mainMenu.getOrganTransplantMenu().getPatientOrganLinkedList().remove(removedPatient);
+                            mainMenu.getBloodDonorMenu().getPatientBloodLinkedList().remove(removedPatient);
+                            if (removedPatient != null)
+                                System.out.println(ConsoleColors.YELLOW + "\n\tPatient " + removedPatient.getFirstName() + " " + removedPatient.getLastName() + " has been removed from the database." + ConsoleColors.RESET);
+                        } else {
+                            removedPatient = null;
+                            System.out.println(ConsoleColors.YELLOW + "\n\tNo changes have been made.");
+                        }
+                    }
+                    break;
+                } catch (NumberFormatException e) {
+                    System.out.println(ConsoleColors.RED + "\n*** Not a valid input. Please try again. ***" + ConsoleColors.RESET);
+                    continue;
+                }
+            }
+        }
+        return removedPatient;
     }
 
     private Patient updateContactInfo() {
@@ -123,7 +203,7 @@ public class ContactInfoMenu {
             updatedPatient = mainMenu.getPatientLinkedList().get(searchResults.get(0));
             while (true) {
                 try {
-                    if (mainMenu.doubleCheck(updatedPatient, "update")) {
+                    if (Utils.doubleCheck(updatedPatient, "update")) {
                         updatedPatient = updatePatient(updatedPatient);
                         System.out.println(ConsoleColors.YELLOW + "\n\tPatient " + updatedPatient.getFirstName() + " " + updatedPatient.getLastName() + " has been updated." + ConsoleColors.RESET);
                     } else {
@@ -143,7 +223,7 @@ public class ContactInfoMenu {
         System.out.println(ConsoleColors.CYAN + "\nWhat do you want to update?" + ConsoleColors.RESET);
         System.out.println("\t1. Phone Number\n\t2. Email Address\n\t3. Home Address\n\t4. All");
         try {
-            int response = Integer.parseInt(mainMenu.in.next());
+            int response = Integer.parseInt(Utils.input.next());
             if (response < 1 || response > 4) {
                 System.out.println(ConsoleColors.RED + "\n*** Not a valid command. Please try again. ***" + ConsoleColors.RESET);
                 updatePatient(patient);
@@ -175,22 +255,22 @@ public class ContactInfoMenu {
 
     private void updatePhoneNumber(Patient patient) {
         System.out.print(patient.getFirstName() + " " + patient.getLastName() + "'s phone number: \t");
-        mainMenu.in.nextLine();
-        String inputNumber = mainMenu.in.nextLine();
+        Utils.input.nextLine();
+        String inputNumber = Utils.input.nextLine();
         long phoneNumberInt = convertPhoneNumberToLong(inputNumber);
         patient.getPatientContactInfo().setPhoneNumber(phoneNumberInt);
     }
 
     private void updateEmailAddress(Patient patient) {
         System.out.print(patient.getFirstName() + " " + patient.getLastName() + "'s email address: \t");
-        String emailAddress = mainMenu.in.next();
+        String emailAddress = Utils.input.next();
         patient.getPatientContactInfo().setEmailAddress(emailAddress);
     }
 
     private void updateHomeAddress(Patient patient) {
         System.out.print(patient.getFirstName() + " " + patient.getLastName() + "'s home address: \t");
-        mainMenu.in.nextLine();
-        String homeAddress = mainMenu.in.nextLine();
+        Utils.input.nextLine();
+        String homeAddress = Utils.input.nextLine();
         patient.getPatientContactInfo().setHomeAddress(homeAddress);
     }
 
@@ -199,9 +279,12 @@ public class ContactInfoMenu {
         if (searchResults.size() == 0) {
             return;
         } else {
-            System.out.println(ConsoleColors.CYAN + "\nFound Patient:" + ConsoleColors.RESET);
-            System.out.println("\t" + mainMenu.getPatientLinkedList().get(searchResults.get(0)) + mainMenu.getPatientLinkedList().get(searchResults.get(0)).getPatientContactInfo());
+            System.out.println(ConsoleColors.CYAN + "\nFound Patient(s):" + ConsoleColors.RESET);
+            for (Integer i : searchResults) {
+                System.out.println("\t" + mainMenu.getPatientLinkedList().get(i) + mainMenu.getPatientLinkedList().get(i).getPatientContactInfo());
+            }
         }
+        return;
     }
 
     public LinkedList<Integer> searchForPatient() {
@@ -217,7 +300,7 @@ public class ContactInfoMenu {
                 System.out.println("\t2. Last Name");
                 System.out.println("\t3. Phone Number");
                 try {
-                    int response = Integer.parseInt(mainMenu.in.next());
+                    int response = Integer.parseInt(Utils.input.next());
                     if (response < 1 || response > 3) {
                         System.out.println(ConsoleColors.RED + "\n*** Not a valid command. Please try again. ***" + ConsoleColors.RESET);
                         continue;
@@ -225,25 +308,25 @@ public class ContactInfoMenu {
                         switch (response) {
                             case 1:
                                 System.out.print("\nID of Patient: ");
-                                int id = Integer.parseInt(mainMenu.in.next());
-                                searchResults = patientBinarySearch.bSearchID(tempPatientList, id, 0, tempPatientList.size() - 1);
+                                int id = Integer.parseInt(Utils.input.next());
+                                searchResults = binarySearch.bSearchID(tempPatientList, id, 0, tempPatientList.size() - 1);
                                 if (searchResults.isEmpty()) {
                                     System.out.println(ConsoleColors.RED + "\n*** There are no patients with this ID ***" + ConsoleColors.RESET);
                                 }
                                 break;
                             case 2:
                                 System.out.print("\nLast Name: ");
-                                String lastName = mainMenu.in.next();
-                                searchResults = patientBinarySearch.bSearchLastName(tempPatientList, lastName, 0, tempPatientList.size() - 1);
+                                String lastName = Utils.input.next();
+                                searchResults = binarySearch.bSearchLastName(tempPatientList, lastName, 0, tempPatientList.size() - 1);
                                 if (searchResults.isEmpty()) {
                                     System.out.println(ConsoleColors.RED + "\n*** There are no patients with this last name ***" + ConsoleColors.RESET);
                                 }
                                 break;
                             case 3:
                                 System.out.print("\nPhone Number: ");
-                                mainMenu.in.nextLine();
-                                long phoneNumber = convertPhoneNumberToLong(mainMenu.in.nextLine());
-                                searchResults = patientBinarySearch.bSearchPhoneNumber(tempPatientList, phoneNumber, 0, tempPatientList.size() - 1);
+                                Utils.input.nextLine();
+                                long phoneNumber = convertPhoneNumberToLong(Utils.input.nextLine());
+                                searchResults = binarySearch.bSearchPhoneNumber(tempPatientList, phoneNumber, 0, tempPatientList.size() - 1);
                                 if (searchResults.isEmpty()) {
                                     System.out.println(ConsoleColors.RED + "\n*** There are no patients with this phone number ***" + ConsoleColors.RESET);
                                 }
@@ -271,7 +354,7 @@ public class ContactInfoMenu {
             System.out.println("\t1. Patient ID");
             System.out.println("\t2. Last Name");
             System.out.println("\t3. Phone Number");
-            response = mainMenu.in.next();
+            response = Utils.input.next();
             try {
                 optionNumber = Integer.parseInt(response);
             } catch (NumberFormatException e) {
@@ -286,15 +369,15 @@ public class ContactInfoMenu {
             } else {
                 switch (optionNumber) {
                     case 1:
-                        patientQuickSort.quickSortID(patientLinkedList, 0, patientLinkedList.size() - 1);
+                        QuickSort.quickSortID(patientLinkedList, 0, patientLinkedList.size() - 1);
                         patientListTable(patientLinkedList);
                         break;
                     case 2:
-                        patientQuickSort.quickSortLastName(patientLinkedList, 0, patientLinkedList.size() - 1);
+                        QuickSort.quickSortLastName(patientLinkedList, 0, patientLinkedList.size() - 1);
                         patientListTable(patientLinkedList);
                         break;
                     case 3:
-                        patientQuickSort.quickSortPhoneNumber(patientLinkedList, 0, patientLinkedList.size() - 1);
+                        QuickSort.quickSortPhoneNumber(patientLinkedList, 0, patientLinkedList.size() - 1);
                         patientListTable(patientLinkedList);
                         break;
                 }
@@ -332,6 +415,9 @@ public class ContactInfoMenu {
             if (Character.isDigit(inputNumber.charAt(i))) {
                 phoneNumberStr = phoneNumberStr + inputNumber.charAt(i);
             }
+        }
+        if (phoneNumberStr.length() != 10) {
+            return 0;
         }
         long phoneNumberInt = 0;
         for (int i = 0; i < 10; i++) {

@@ -1,7 +1,12 @@
-package finalProject.dataStructures.menus;
+package dataStructures.finalProject.menus;
 
-import finalProject.dataStructures.ConsoleColors;
-import finalProject.dataStructures.patient.*;
+import dataStructures.finalProject.patient.Patient;
+import dataStructures.finalProject.utilities.BinarySearch;
+import dataStructures.finalProject.utilities.Utils;
+import dataStructures.finalProject.utilities.ConsoleColors;
+import dataStructures.finalProject.patient.PatientContactInfo;
+import dataStructures.finalProject.patient.PatientOrganInfo;
+import dataStructures.finalProject.patient.blood.PatientBloodInfo;
 
 import java.io.*;
 import java.util.LinkedList;
@@ -16,27 +21,23 @@ import java.util.Scanner;
 
 public class MainMenu {
 
-    protected static Scanner in = new Scanner(System.in);
-
     private LinkedList<Patient> patientLinkedList;
-    private PatientQuickSort patientQuickSort;
-    private PatientBinarySearch patientBinarySearch;
+    private BinarySearch binarySearch;
 
     private ContactInfoMenu contactInfoMenu;
     private OrganTransplantMenu organTransplantMenu;
-    //private BloodTransfusionMenu bloodTransfusionMenu = new BloodTransfusionMenu(this);
-    //private RoomSchedulerMenu roomSchedulerMenu = new RoomSchedulerMenu(this);
+    private BloodDonorMenu bloodDonorMenu;
 
     public MainMenu() {
-        patientLinkedList = new LinkedList<>();
-        patientQuickSort = new PatientQuickSort();
-        patientBinarySearch = new PatientBinarySearch();
-        contactInfoMenu = new ContactInfoMenu(this);
-        organTransplantMenu = new OrganTransplantMenu(this);
-        initiatePrebuiltLists();
+        this.patientLinkedList = new LinkedList<>();
+        this.binarySearch = new BinarySearch();
+        this.contactInfoMenu = new ContactInfoMenu(this);
+        this.organTransplantMenu = new OrganTransplantMenu(this);
+        this.bloodDonorMenu = new BloodDonorMenu(this);
+        readPatientDataFromFile();
     }
 
-    private void initiatePrebuiltLists() {
+    private void readPatientDataFromFile() {
         File patientFile = new File("src/Patient List");
         Scanner reader = null;
         try {
@@ -45,6 +46,7 @@ public class MainMenu {
             e.printStackTrace();
         }
         try {
+            Utils.patIdPointer = reader.nextInt();
             while (reader.hasNextLine()) {
                 String next = reader.next();
                 if (next.equalsIgnoreCase("contact")) {
@@ -56,8 +58,10 @@ public class MainMenu {
                     String lastName = reader.next();
                     long phone = reader.nextLong();
                     String email = reader.next();
-                    Patient p = contactInfoMenu.addPatient(firstName, lastName);
+                    int id = reader.nextInt();
+                    Patient p = new Patient(id, firstName, lastName);
                     p.setPatientContactInfo(new PatientContactInfo(phone, email, "123 Generic Street"));
+                    patientLinkedList.add(p);
                 }
             }
             while (reader.hasNextLine()) {
@@ -71,12 +75,29 @@ public class MainMenu {
                     String lastName = reader.next();
                     String organ = reader.next();
                     int urgency = reader.nextInt();
-                    int existingPatientIndex = patientBinarySearch.bSearchLastName(patientLinkedList, lastName, 0, patientLinkedList.size() - 1).get(0);
+                    int existingPatientIndex = binarySearch.bSearchLastName(patientLinkedList, lastName, 0, patientLinkedList.size() - 1).get(0);
                     Patient existingPatient = patientLinkedList.get(existingPatientIndex);
                     if ((firstName + lastName).equalsIgnoreCase(existingPatient.getFirstName() + existingPatient.getLastName())) {
                         existingPatient.setPatientOrganInfo(new PatientOrganInfo(organ, urgency));
                         organTransplantMenu.getPatientOrganLinkedList().add(existingPatient);
                     }
+                }
+            }
+            bloodDonorMenu.setBloodTypes();
+            for (int i = 0; i < 8; i++) {
+                Utils.bloodArray[i].setBloodUnitAmount(reader.nextInt());
+            }
+            while (reader.hasNextLine()) {
+                String firstName = reader.next();
+                String lastName = reader.next();
+                String bloodType = reader.next();
+                boolean eligible = reader.nextBoolean();
+                boolean willing = reader.nextBoolean();
+                int existingPatientIndex = binarySearch.bSearchLastName(patientLinkedList, lastName, 0, patientLinkedList.size() - 1).get(0);
+                Patient existingPatient = patientLinkedList.get(existingPatientIndex);
+                if ((firstName + lastName).equalsIgnoreCase(existingPatient.getFirstName() + existingPatient.getLastName())) {
+                    existingPatient.setPatientBloodInfo(new PatientBloodInfo(bloodType, eligible, willing));
+                    bloodDonorMenu.getPatientBloodLinkedList().add(existingPatient);
                 }
             }
             reader.close();
@@ -85,18 +106,25 @@ public class MainMenu {
         }
     }
 
-    public void writeDataToFile() {
+    public void writePatientDataToFile() {
         try (Writer writer = new BufferedWriter(new OutputStreamWriter(
                 new FileOutputStream("src/Patient List"), "utf-8"))) {
-            writer.write("Contact\n");
+            writer.write(String.valueOf(Utils.patIdPointer) + "\n");
+            writer.write("Contact");
             for (Patient p : patientLinkedList) {
-                writer.write(p.getFirstName() + " " + p.getLastName() + " " + p.getPatientContactInfo().getPhoneNumber() + " " + p.getPatientContactInfo().getEmailAddress() + "\n");
+                writer.write("\n" + p.getFirstName() + " " + p.getLastName() + " " + p.getPatientContactInfo().getPhoneNumber() + " " + p.getPatientContactInfo().getEmailAddress() + " " + p.getId());
             }
-            writer.write("Organ\n");
+            writer.write("\nOrgan");
             for (Patient p : organTransplantMenu.getPatientOrganLinkedList()) {
-                writer.write(p.getFirstName() + " " + p.getLastName() + " " + p.getPatientOrganInfo().getOrgan() + " " + p.getPatientOrganInfo().getUrgency() + "\n");
+                writer.write("\n" + p.getFirstName() + " " + p.getLastName() + " " + p.getPatientOrganInfo().getOrgan() + " " + p.getPatientOrganInfo().getUrgency());
             }
-            writer.write("Blood\n");
+            writer.write("\nBlood\n");
+            for (int i = 0; i < Utils.bloodArray.length; i++) {
+                writer.write(Utils.bloodArray[i].getBloodUnitAmount() + " ");
+            }
+            for (Patient p : bloodDonorMenu.getPatientBloodLinkedList()) {
+                writer.write("\n" + p.getFirstName() + " " + p.getLastName() + " " + p.getPatientBloodInfo().getBloodType() + " " + p.getPatientBloodInfo().isEligibleDonor() + " " + p.getPatientBloodInfo().isWillingDonor());
+            }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (FileNotFoundException e) {
@@ -110,7 +138,7 @@ public class MainMenu {
         while (menuOptions()) {
             menuOptions();
         }
-        in.close();
+        Utils.input.close();
     }
 
     private boolean menuOptions() {
@@ -120,11 +148,10 @@ public class MainMenu {
             System.out.println(ConsoleColors.CYAN + "\nWhat would you like to work on?" + ConsoleColors.RESET);
             System.out.println("\t1. Patient Info");
             System.out.println("\t2. Organ Transplant List");
-            System.out.println("\t3. Blood Transfusion List");
-            System.out.println("\t4. Room Scheduler");
-            System.out.println("\t5. Exit Program");
-            response = Integer.parseInt(in.next());
-            if (response < 1 || response > 5) {
+            System.out.println("\t3. Blood Donor List");
+            System.out.println("\t4. Exit Program");
+            response = Integer.parseInt(Utils.input.next());
+            if (response < 1 || response > 4) {
                 System.out.println(ConsoleColors.RED + "\n*** Not a valid command. Please try again. ***" + ConsoleColors.RESET);
             } else {
                 runOption(response);
@@ -143,39 +170,13 @@ public class MainMenu {
             case 2:
                 organTransplantMenu.run();
                 break;
-            /*case 3:
-                bloodTransfusionMenu.run();
+            case 3:
+                bloodDonorMenu.run();
                 break;
             case 4:
-                roomSchedulerMenu.run();
-                break;*/
-            case 5:
-                writeDataToFile();
+                writePatientDataToFile();
                 System.out.println("Goodbye!");
                 System.exit(0);
-        }
-    }
-
-    public boolean doubleCheck(Patient patient, String string) {
-        int response;
-        while (true) {
-            System.out.println(ConsoleColors.CYAN + "\nIs this the patient you would like to " + string + "?" + ConsoleColors.RESET);
-            System.out.println("\t" + patient);
-            System.out.println("\t\t1. Yes\n\t\t2. No");
-            try {
-                response = Integer.parseInt(in.next());
-                if (response == 1) {
-                    return true;
-                } else if (response == 2) {
-                    return false;
-                } else {
-                    System.out.println(ConsoleColors.RED + "\n*** Not a valid command. Please try again. ***" + ConsoleColors.RESET);
-                    continue;
-                }
-            } catch (NumberFormatException e) {
-                System.out.println(ConsoleColors.RED + "\n*** Not a valid input. Please try again. ***" + ConsoleColors.RESET);
-                continue;
-            }
         }
     }
 
@@ -185,5 +186,13 @@ public class MainMenu {
 
     public ContactInfoMenu getContactInfoMenu() {
         return contactInfoMenu;
+    }
+
+    public OrganTransplantMenu getOrganTransplantMenu() {
+        return organTransplantMenu;
+    }
+
+    public BloodDonorMenu getBloodDonorMenu() {
+        return bloodDonorMenu;
     }
 }

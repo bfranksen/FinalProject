@@ -1,6 +1,7 @@
-package finalProject.dataStructures.patient;
+package dataStructures.finalProject.patient;
 
-import finalProject.dataStructures.ConsoleColors;
+import dataStructures.finalProject.utilities.ConsoleColors;
+import dataStructures.finalProject.patient.blood.PatientBloodInfo;
 
 import java.util.Objects;
 
@@ -18,7 +19,7 @@ public class Patient {
 
     private PatientContactInfo patientContactInfo;
     private PatientOrganInfo patientOrganInfo;
-    private PatientBloodTransfusionInfo patientBloodTransfusionInfo;
+    private PatientBloodInfo patientBloodInfo;
 
     public Patient(int id, String firstName, String lastName) {
         this.id = id;
@@ -54,12 +55,12 @@ public class Patient {
         this.patientOrganInfo = patientOrganInfo;
     }
 
-    public PatientBloodTransfusionInfo getPatientBloodTransfusionInfo() {
-        return patientBloodTransfusionInfo;
+    public PatientBloodInfo getPatientBloodInfo() {
+        return patientBloodInfo;
     }
 
-    public void setPatientBloodTransfusionInfo(PatientBloodTransfusionInfo patientBloodTransfusionInfo) {
-        this.patientBloodTransfusionInfo = patientBloodTransfusionInfo;
+    public void setPatientBloodInfo(PatientBloodInfo patientBloodInfo) {
+        this.patientBloodInfo = patientBloodInfo;
     }
 
     @Override
@@ -72,13 +73,13 @@ public class Patient {
                 Objects.equals(getLastName(), patient.getLastName()) &&
                 Objects.equals(patientContactInfo, patient.patientContactInfo) &&
                 Objects.equals(patientOrganInfo, patient.patientOrganInfo) &&
-                Objects.equals(patientBloodTransfusionInfo, patient.patientBloodTransfusionInfo);
+                Objects.equals(patientBloodInfo, patient.patientBloodInfo);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(getFirstName(), getLastName(), getId(), patientContactInfo, patientOrganInfo, patientBloodTransfusionInfo);
+        return Objects.hash(getFirstName(), getLastName(), getId(), patientContactInfo, patientOrganInfo, patientBloodInfo);
     }
 
     @Override

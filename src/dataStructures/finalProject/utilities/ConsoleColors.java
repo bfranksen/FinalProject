@@ -1,4 +1,4 @@
-package finalProject.dataStructures;
+package dataStructures.finalProject.utilities;
 
 /****************************************
  *     FinalProject

@@ -1,4 +1,4 @@
-package finalProject.dataStructures.patient;
+package dataStructures.finalProject.patient;
 
 import java.util.Objects;
 
@@ -65,5 +65,10 @@ public class PatientContactInfo {
         return "\n\t\tPhone Number:\t(" + phoneNumberStr.substring(0, 3) + ") " + phoneNumberStr.substring(3, 6) + "-" + phoneNumberStr.substring(6, 10) +
                 "\n\t\tEmail Address:\t" + emailAddress +
                 "\n\t\tHome Address:\t" + homeAddress;
+    }
+
+    public String phToString() {
+        String phoneNumberStr = String.valueOf(phoneNumber);
+        return "(" + phoneNumberStr.substring(0, 3) + ") " + phoneNumberStr.substring(3, 6) + "-" + phoneNumberStr.substring(6, 10);
     }
 }
