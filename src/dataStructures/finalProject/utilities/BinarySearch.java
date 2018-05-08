@@ -15,6 +15,7 @@ public class BinarySearch {
 
     private static LinkedList holder = new LinkedList();
 
+
     public static LinkedList<Integer> bSearchID(LinkedList<Patient> list, int id, int left, int right) {
 
         holder.clear();

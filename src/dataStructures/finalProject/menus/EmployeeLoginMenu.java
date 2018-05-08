@@ -31,6 +31,7 @@ public class EmployeeLoginMenu {
     private void readEmployeeDataFromFile() {
         File employeeFile = new File("src/Employee List");
         Scanner reader = null;
+
         try {
             reader = new Scanner(employeeFile);
         } catch (FileNotFoundException e) {
@@ -52,6 +53,8 @@ public class EmployeeLoginMenu {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            reader.close();
         }
     }
 
@@ -66,6 +69,7 @@ public class EmployeeLoginMenu {
             for (String k : employeePasswords.keySet()) {
                 writer.write("\n" + k + " " + employeePasswords.get(k));
             }
+            writer.close();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (FileNotFoundException e) {

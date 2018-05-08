@@ -35,8 +35,12 @@ public class MainMenu {
     }
 
     private void readPatientDataFromFile() {
+        LinkedList<Integer> searchResults;
+        Patient existingPatient;
+
         File patientFile = new File("src/Patient List");
         Scanner reader = null;
+
         try {
             reader = new Scanner(patientFile);
         } catch (FileNotFoundException e) {
@@ -73,11 +77,15 @@ public class MainMenu {
                     String lastName = Utils.convertDashesToSpaces(reader.next());
                     String organ = Utils.convertDashesToSpaces(reader.next());
                     int urgency = reader.nextInt();
-                    int existingPatientIndex = BinarySearch.bSearchLastName(patientLinkedList, lastName, 0, patientLinkedList.size() - 1).get(0);
-                    Patient existingPatient = patientLinkedList.get(existingPatientIndex);
-                    if ((firstName + lastName).equalsIgnoreCase(existingPatient.getFirstName() + existingPatient.getLastName())) {
-                        existingPatient.setPatientOrganInfo(new PatientOrganInfo(organ, urgency));
-                        organTransplantMenu.getPatientOrganLinkedList().add(existingPatient);
+                    searchResults = BinarySearch.bSearchLastName(patientLinkedList, lastName, 0, patientLinkedList.size() - 1);
+                    for (Integer i : searchResults) {
+                        if (patientLinkedList.get(i).getFirstName().equalsIgnoreCase(firstName)) {
+                            existingPatient = patientLinkedList.get(i);
+                            existingPatient.setPatientOrganInfo(new PatientOrganInfo(organ, urgency));
+                            organTransplantMenu.getPatientOrganLinkedList().add(existingPatient);
+                        } else {
+                            continue;
+                        }
                     }
                 }
             }
@@ -86,7 +94,6 @@ public class MainMenu {
                 Utils.bloodArray[i].setBloodUnitAmount(reader.nextInt());
             }
             while (reader.hasNextLine()) {
-                LinkedList<Integer> searchResults;
                 String firstName = Utils.convertDashesToSpaces(reader.next());
                 String lastName = Utils.convertDashesToSpaces(reader.next());
                 String bloodType = reader.next();
@@ -95,7 +102,7 @@ public class MainMenu {
                 searchResults = BinarySearch.bSearchLastName(patientLinkedList, lastName, 0, patientLinkedList.size() - 1);
                 for (Integer i : searchResults) {
                     if (patientLinkedList.get(i).getFirstName().equalsIgnoreCase(firstName)) {
-                        Patient existingPatient = patientLinkedList.get(i);
+                        existingPatient = patientLinkedList.get(i);
                         existingPatient.setPatientBloodInfo(new PatientBloodInfo(bloodType, eligible, willing));
                         bloodDonorMenu.getPatientBloodLinkedList().add(existingPatient);
                     } else {
@@ -106,6 +113,8 @@ public class MainMenu {
             reader.close();
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            reader.close();
         }
     }
 
@@ -128,6 +137,7 @@ public class MainMenu {
             for (Patient p : bloodDonorMenu.getPatientBloodLinkedList()) {
                 writer.write("\n" + Utils.convertSpacesToDashes(p.getFirstName()) + " " + Utils.convertSpacesToDashes(p.getLastName()) + " " + p.getPatientBloodInfo().getBloodType() + " " + p.getPatientBloodInfo().isEligibleDonor() + " " + p.getPatientBloodInfo().isWillingDonor());
             }
+            writer.close();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (FileNotFoundException e) {
@@ -141,7 +151,6 @@ public class MainMenu {
         while (menuOptions()) {
             menuOptions();
         }
-        Utils.input.close();
     }
 
     private boolean menuOptions() {

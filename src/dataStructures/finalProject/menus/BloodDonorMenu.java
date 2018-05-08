@@ -451,9 +451,10 @@ public class BloodDonorMenu {
             System.out.println("\t3. Blood Type");
             System.out.println("\t4. Eligibility");
             System.out.println("\t5. Willingness");
+            System.out.println("\t6. Eligible and Willing");
             try {
                 response = Integer.parseInt(Utils.input.next());
-                if (response < 1 || response > 5) {
+                if (response < 1 || response > 6) {
                     System.out.println(ConsoleColors.RED + "\n*** Not a valid command. Please try again. ***" + ConsoleColors.RESET);
                     viewPatientList();
                     return;
@@ -479,6 +480,9 @@ public class BloodDonorMenu {
                 case 5:
                     QuickSort.quickSortWillingDonors(patientBloodLinkedList, 0, patientBloodLinkedList.size() - 1);
                     break;
+                case 6:
+                    QuickSort.quickSortEligibleAndWillingDonors(patientBloodLinkedList, 0, patientBloodLinkedList.size() - 1);
+                    break;
             }
             patientListTable(patientBloodLinkedList);
         }
@@ -499,9 +503,10 @@ public class BloodDonorMenu {
                 System.out.println("\t3. Blood Type");
                 System.out.println("\t4. Eligible Donors");
                 System.out.println("\t5. Willing Donors");
+                System.out.println("\t6. Eligible and Willing Donors");
                 try {
                     response = Integer.parseInt(Utils.input.next());
-                    if (response < 1 || response > 5) {
+                    if (response < 1 || response > 6) {
                         System.out.println(ConsoleColors.RED + "\n*** Not a valid command. Please try again. ***" + ConsoleColors.RESET);
                         continue;
                     }
@@ -594,6 +599,40 @@ public class BloodDonorMenu {
                         }
                         if (searchResults.isEmpty()) {
                             System.out.println(ConsoleColors.RED + "\n*** There are no eligible donors ***" + ConsoleColors.RESET);
+                        }
+                        break;
+                    case 6:
+                        while (true) {
+                            System.out.println(ConsoleColors.CYAN + "\nSearch for:\n\t" + ConsoleColors.RESET +
+                                    "1. All eligible and willing donors\n\t2. Eligible and willing donors for specific blood type\n");
+                            try {
+                                response = Integer.parseInt(Utils.input.next());
+                                if (response == 1) {
+                                    for (Patient p : patientBloodLinkedList) {
+                                        if (p.getPatientBloodInfo().isEligibleDonor() && p.getPatientBloodInfo().isWillingDonor()) {
+                                            searchResults.add(patientBloodLinkedList.indexOf(p));
+                                        }
+                                    }
+                                } else if (response == 2) {
+                                    preMsg = ConsoleColors.CYAN + "\nWhich blood type?" + ConsoleColors.RESET;
+                                    bloodType = askForPatientBloodType(preMsg);
+                                    LinkedList<Integer> tempList = BinarySearch.bSearchBloodType(patientBloodLinkedList, bloodType, 0, patientBloodLinkedList.size() - 1);
+                                    for (Integer i : tempList) {
+                                        if (patientBloodLinkedList.get(i).getPatientBloodInfo().isEligibleDonor() && patientBloodLinkedList.get(i).getPatientBloodInfo().isWillingDonor())
+                                            searchResults.add(i);
+                                    }
+                                } else {
+                                    System.out.println(ConsoleColors.RED + "\n*** Not a valid command. Please try again. ***" + ConsoleColors.RESET);
+                                    continue;
+                                }
+                            } catch (NumberFormatException e) {
+                                System.out.println(ConsoleColors.RED + "\n*** Not a valid input. Please try again. ***" + ConsoleColors.RESET);
+                                continue;
+                            }
+                            break;
+                        }
+                        if (searchResults.isEmpty()) {
+                            System.out.println(ConsoleColors.RED + "\n*** There are no eligible and willing donors ***" + ConsoleColors.RESET);
                         }
                         break;
                 }

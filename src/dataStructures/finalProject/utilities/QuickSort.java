@@ -92,10 +92,10 @@ public class QuickSort {
         int j = right;
 
         while (i <= j) {
-            while (list.get(i).getPatientOrganInfo().getUrgency() < list.get(pivot).getPatientOrganInfo().getUrgency()) {
+            while (compareUrgency(list.get(i), list.get(pivot)) < 0) {
                 i++;
             }
-            while (list.get(j).getPatientOrganInfo().getUrgency() > list.get(pivot).getPatientOrganInfo().getUrgency()) {
+            while (compareUrgency(list.get(j), list.get(pivot)) > 0) {
                 j--;
             }
             if (i <= j) {
@@ -162,10 +162,10 @@ public class QuickSort {
         int j = right;
 
         while (i <= j) {
-            while (list.get(i).getPatientOrganInfo().getOrgan().compareToIgnoreCase(list.get(pivot).getPatientOrganInfo().getOrgan()) < 0) {
+            while (compareOrgan(list.get(i), list.get(pivot)) < 0) {
                 i++;
             }
-            while (list.get(j).getPatientOrganInfo().getOrgan().compareToIgnoreCase(list.get(pivot).getPatientOrganInfo().getOrgan()) > 0) {
+            while (compareOrgan(list.get(j), list.get(pivot)) > 0) {
                 j--;
             }
             if (i <= j) {
@@ -287,16 +287,121 @@ public class QuickSort {
         return list;
     }
 
+    public static LinkedList<Patient> quickSortEligibleAndWillingDonors(LinkedList<Patient> list, int left, int right) {
+
+        if (left >= right) {
+            return list;
+        }
+
+        int pivot = right;
+        int i = left;
+        int j = right;
+
+        while (i <= j) {
+            while (compareEligibleAndWillingDonors(list.get(i), list.get(pivot)) > 0) {
+                i++;
+            }
+            while (compareEligibleAndWillingDonors(list.get(j), list.get(pivot)) < 0) {
+                j--;
+            }
+            if (i <= j) {
+                Patient node = list.get(i);
+                list.set(i, list.get(j));
+                list.set(j, node);
+                i++;
+                j--;
+            }
+        }
+        if (left < j) {
+            quickSortEligibleAndWillingDonors(list, left, j);
+        }
+        if (right > i) {
+            quickSortEligibleAndWillingDonors(list, i, right);
+        }
+        return list;
+    }
+
+    private static int compareOrgan(Patient p1, Patient p2) {
+        int organResult = p1.getPatientOrganInfo().getOrgan().compareToIgnoreCase(p2.getPatientOrganInfo().getOrgan());
+
+        if (organResult != 0) {
+            return organResult;
+        }
+
+        int urgencyResult;
+
+        if (p1.getPatientOrganInfo().getUrgency() > p2.getPatientOrganInfo().getUrgency()) {
+            urgencyResult = -1;
+        } else if (p1.getPatientOrganInfo().getUrgency() < p2.getPatientOrganInfo().getUrgency()) {
+            urgencyResult = 1;
+        } else {
+            urgencyResult = 0;
+        }
+
+        return urgencyResult;
+    }
+
+    private static int compareUrgency(Patient p1, Patient p2) {
+        int urgencyResult;
+
+        if (p1.getPatientOrganInfo().getUrgency() > p2.getPatientOrganInfo().getUrgency()) {
+            urgencyResult = -1;
+        } else if (p1.getPatientOrganInfo().getUrgency() < p2.getPatientOrganInfo().getUrgency()) {
+            urgencyResult = 1;
+        } else {
+            urgencyResult = 0;
+        }
+
+        if (urgencyResult != 0) {
+            return urgencyResult;
+        }
+
+        return p1.getPatientOrganInfo().getOrgan().compareToIgnoreCase(p2.getPatientOrganInfo().getOrgan());
+
+    }
+
     private static int compareEligibleDonors(Patient p1, Patient p2) {
-        boolean b1 = p1.getPatientBloodInfo().isEligibleDonor();
-        boolean b2 = p2.getPatientBloodInfo().isEligibleDonor();
-        return Boolean.compare(b1, b2);
+        boolean e1 = p1.getPatientBloodInfo().isEligibleDonor();
+        boolean e2 = p2.getPatientBloodInfo().isEligibleDonor();
+        int eligibleResult = Boolean.compare(e1, e2);
+
+        if (eligibleResult != 0) {
+            return eligibleResult;
+        }
+
+        return -p1.getPatientBloodInfo().getBloodType().compareToIgnoreCase(p2.getPatientBloodInfo().getBloodType());
     }
 
     private static int compareWillingDonors(Patient p1, Patient p2) {
-        boolean b1 = p1.getPatientBloodInfo().isWillingDonor();
-        boolean b2 = p2.getPatientBloodInfo().isWillingDonor();
-        return Boolean.compare(b1, b2);
+        boolean w1 = p1.getPatientBloodInfo().isWillingDonor();
+        boolean w2 = p2.getPatientBloodInfo().isWillingDonor();
+        int willingResult = Boolean.compare(w1, w2);
+
+        if (willingResult != 0) {
+            return willingResult;
+        }
+
+        return -p1.getPatientBloodInfo().getBloodType().compareToIgnoreCase(p2.getPatientBloodInfo().getBloodType());
+    }
+
+    private static int compareEligibleAndWillingDonors(Patient p1, Patient p2) {
+        boolean e1 = p1.getPatientBloodInfo().isEligibleDonor();
+        boolean e2 = p2.getPatientBloodInfo().isEligibleDonor();
+        int eligibleResult = Boolean.compare(e1, e2);
+
+        if (eligibleResult != 0) {
+            return eligibleResult;
+        }
+
+        boolean w1 = p1.getPatientBloodInfo().isWillingDonor();
+        boolean w2 = p2.getPatientBloodInfo().isWillingDonor();
+        int willingResult = Boolean.compare(w1, w2);
+
+        if (willingResult != 0) {
+            return willingResult;
+        }
+
+        return -p1.getPatientBloodInfo().getBloodType().compareToIgnoreCase(p2.getPatientBloodInfo().getBloodType());
     }
 }
 
