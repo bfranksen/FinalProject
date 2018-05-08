@@ -66,9 +66,4 @@ public class PatientContactInfo {
                 "\n\t\tEmail Address:\t" + emailAddress +
                 "\n\t\tHome Address:\t" + homeAddress;
     }
-
-    public String phToString() {
-        String phoneNumberStr = String.valueOf(phoneNumber);
-        return "(" + phoneNumberStr.substring(0, 3) + ") " + phoneNumberStr.substring(3, 6) + "-" + phoneNumberStr.substring(6, 10);
-    }
 }

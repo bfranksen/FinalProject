@@ -40,4 +40,28 @@ public class Utils {
             }
         }
     }
+
+    public static String convertSpacesToDashes(String string) {
+        String convertedString = "";
+        for (int i = 0; i < string.length(); i++) {
+            if (string.charAt(i) == ' ') {
+                convertedString = convertedString.substring(0, i) + '-';
+            } else {
+                convertedString = convertedString.substring(0, i) + string.charAt(i);
+            }
+        }
+        return convertedString;
+    }
+
+    public static String convertDashesToSpaces(String string) {
+        String convertedString = "";
+        for (int i = 0; i < string.length(); i++) {
+            if (string.charAt(i) == '-') {
+                convertedString = convertedString.substring(0, i) + ' ';
+            } else {
+                convertedString = convertedString.substring(0, i) + string.charAt(i);
+            }
+        }
+        return convertedString;
+    }
 }

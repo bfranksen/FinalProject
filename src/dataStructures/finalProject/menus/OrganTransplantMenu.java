@@ -20,14 +20,10 @@ public class OrganTransplantMenu {
 
     private MainMenu mainMenu;
     private LinkedList<Patient> patientOrganLinkedList;
-    private QuickSort QuickSort;
-    private BinarySearch binarySearch;
 
     public OrganTransplantMenu(MainMenu mainMenu) {
         this.mainMenu = mainMenu;
         this.patientOrganLinkedList = new LinkedList<>();
-        this.QuickSort = new QuickSort();
-        this.binarySearch = new BinarySearch();
     }
 
     public void run() {
@@ -89,27 +85,22 @@ public class OrganTransplantMenu {
     }
 
     private Patient userAddPatient() {
-        Patient newPatient = null;
         ContactInfoMenu contactInfoMenu = mainMenu.getContactInfoMenu();
+        Patient newPatient;
 
         while (true) {
             System.out.println(ConsoleColors.CYAN + "\nCreate new patient or add existing patient?" + ConsoleColors.RESET);
             System.out.println("\t1. Create new patient\n\t2. Add existing patient");
             try {
                 int response = Integer.parseInt(Utils.input.next());
-                if (response < 1 || response > 2) {
+                if (response == 1) {
+                    newPatient = contactInfoMenu.userAddPatient();
+                    addNewPatient(newPatient);
+                } else if (response == 2) {
+                    newPatient = addExistingPatient(contactInfoMenu);
+                } else {
                     System.out.println(ConsoleColors.RED + "\n*** Not a valid command. Please try again. ***" + ConsoleColors.RESET);
                     continue;
-                } else {
-                    switch (response) {
-                        case 1:
-                            newPatient = contactInfoMenu.userAddPatient();
-                            addNewPatient(newPatient);
-                            break;
-                        case 2:
-                            newPatient = addExistingPatient(contactInfoMenu);
-                            break;
-                    }
                 }
                 if (newPatient != null) {
                     patientOrganLinkedList.add(newPatient);
@@ -124,7 +115,7 @@ public class OrganTransplantMenu {
 
     private Patient addNewPatient(Patient newPatient) {
         System.out.print("\nOrgan Needed: ");
-        String organ = Utils.input.next();
+        String organ = Utils.input.nextLine();
         int urgency;
         while (true) {
             System.out.print("Urgency Level: ");
@@ -384,44 +375,41 @@ public class OrganTransplantMenu {
         if (patientOrganLinkedList.isEmpty()) {
             System.out.println(ConsoleColors.RED + "\n*** There are no patients! ***" + ConsoleColors.RESET);
         } else {
-            String response;
-            int optionNumber;
+            int response;
             System.out.println(ConsoleColors.CYAN + "\nHow would you like to sort the list?" + ConsoleColors.RESET);
             System.out.println("\t1. Patient ID");
             System.out.println("\t2. Last Name");
             System.out.println("\t3. Organ Needed");
             System.out.println("\t4. Urgency Level");
-            response = Utils.input.next();
             try {
-                optionNumber = Integer.parseInt(response);
+                response = Integer.parseInt(Utils.input.next());
+                if (response < 1 || response > 4) {
+                    System.out.println(ConsoleColors.RED + "\n*** Not a valid command. Please try again. ***" + ConsoleColors.RESET);
+                    viewPatientList();
+                    return;
+                }
             } catch (NumberFormatException e) {
                 System.out.println(ConsoleColors.RED + "\n*** Not a valid command. Please try again. ***" + ConsoleColors.RESET);
                 viewPatientList();
                 return;
             }
-            if (optionNumber < 1 || optionNumber > 4) {
-                System.out.println(ConsoleColors.RED + "\n*** Not a valid command. Please try again. ***" + ConsoleColors.RESET);
-                viewPatientList();
-                return;
-            } else {
-                switch (optionNumber) {
-                    case 1:
-                        QuickSort.quickSortID(patientOrganLinkedList, 0, patientOrganLinkedList.size() - 1);
-                        patientListTable(patientOrganLinkedList);
-                        break;
-                    case 2:
-                        QuickSort.quickSortLastName(patientOrganLinkedList, 0, patientOrganLinkedList.size() - 1);
-                        patientListTable(patientOrganLinkedList);
-                        break;
-                    case 3:
-                        QuickSort.quickSortOrgan(patientOrganLinkedList, 0, patientOrganLinkedList.size() - 1);
-                        patientListTable(patientOrganLinkedList);
-                        break;
-                    case 4:
-                        QuickSort.quickSortUrgency(patientOrganLinkedList, 0, patientOrganLinkedList.size() - 1);
-                        patientListTable(patientOrganLinkedList);
-                        break;
-                }
+            switch (response) {
+                case 1:
+                    QuickSort.quickSortID(patientOrganLinkedList, 0, patientOrganLinkedList.size() - 1);
+                    patientListTable(patientOrganLinkedList);
+                    break;
+                case 2:
+                    QuickSort.quickSortLastName(patientOrganLinkedList, 0, patientOrganLinkedList.size() - 1);
+                    patientListTable(patientOrganLinkedList);
+                    break;
+                case 3:
+                    QuickSort.quickSortOrgan(patientOrganLinkedList, 0, patientOrganLinkedList.size() - 1);
+                    patientListTable(patientOrganLinkedList);
+                    break;
+                case 4:
+                    QuickSort.quickSortUrgency(patientOrganLinkedList, 0, patientOrganLinkedList.size() - 1);
+                    patientListTable(patientOrganLinkedList);
+                    break;
             }
         }
     }
@@ -445,28 +433,27 @@ public class OrganTransplantMenu {
                     } else {
                         switch (response) {
                             case 1:
-                                int id;
                                 System.out.print("\nID of Patient: ");
-                                id = Integer.parseInt(Utils.input.next());
-                                searchResults = binarySearch.bSearchID(patientOrganLinkedList, id, 0, patientOrganLinkedList.size() - 1);
+                                int id = Integer.parseInt(Utils.input.next());
+                                searchResults = BinarySearch.bSearchID(patientOrganLinkedList, id, 0, patientOrganLinkedList.size() - 1);
                                 if (searchResults.isEmpty()) {
                                     System.out.println(ConsoleColors.RED + "\n*** There are no patients with this ID ***" + ConsoleColors.RESET);
                                 }
                                 break;
                             case 2:
-                                String lastName;
+                                Utils.input.nextLine();
                                 System.out.print("\nLast Name: ");
-                                lastName = Utils.input.next();
-                                searchResults = binarySearch.bSearchLastName(patientOrganLinkedList, lastName, 0, patientOrganLinkedList.size() - 1);
+                                String lastName = Utils.input.nextLine();
+                                searchResults = BinarySearch.bSearchLastName(patientOrganLinkedList, lastName, 0, patientOrganLinkedList.size() - 1);
                                 if (searchResults.isEmpty()) {
                                     System.out.println(ConsoleColors.RED + "\n*** There are no patients with this last name ***" + ConsoleColors.RESET);
                                 }
                                 break;
                             case 3:
-                                String organ;
+                                Utils.input.nextLine();
                                 System.out.print("\nOrgan Needed: ");
-                                organ = Utils.input.next();
-                                searchResults = binarySearch.bSearchOrgan(patientOrganLinkedList, organ, 0, patientOrganLinkedList.size() - 1);
+                                String organ = Utils.input.nextLine();
+                                searchResults = BinarySearch.bSearchOrgan(patientOrganLinkedList, organ, 0, patientOrganLinkedList.size() - 1);
                                 if (searchResults.isEmpty()) {
                                     System.out.println(ConsoleColors.RED + "\n*** There are no patients that need this organ ***" + ConsoleColors.RESET);
                                 }
@@ -487,7 +474,7 @@ public class OrganTransplantMenu {
                                         continue;
                                     }
                                 }
-                                searchResults = binarySearch.bSearchUrgency(patientOrganLinkedList, urgency, 0, patientOrganLinkedList.size() - 1);
+                                searchResults = BinarySearch.bSearchUrgency(patientOrganLinkedList, urgency, 0, patientOrganLinkedList.size() - 1);
                                 if (searchResults.isEmpty()) {
                                     System.out.println(ConsoleColors.RED + "\n*** There are no patients with this urgency level ***" + ConsoleColors.RESET);
                                 }

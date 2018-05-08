@@ -162,8 +162,8 @@ public class PatientBloodSearch {
             LinkedList<Integer> AM = BinarySearch.bSearchBloodType(sortedList, "A-", 0, sortedList.size() - 1);
             LinkedList<Integer> BM = BinarySearch.bSearchBloodType(sortedList, "B-", 0, sortedList.size() - 1);
 
-            int aUsers = AM.size();
-            int bUsers = BM.size();
+            int aUsers = (AM.size() > 0 ? AM.size() : 1);
+            int bUsers = (BM.size() > 0 ? BM.size() : 1);
 
             double aSupplyDays = aBlood + 1 / aUsers;
             double bSupplyDays = bBlood + 1 / bUsers;
@@ -291,8 +291,8 @@ public class PatientBloodSearch {
             LinkedList<Integer> AM = BinarySearch.bSearchBloodType(sortedlist, "A-", 0, sortedlist.size() - 1);
             LinkedList<Integer> BM = BinarySearch.bSearchBloodType(sortedlist, "B-", 0, sortedlist.size() - 1);
 
-            int aUsers = AM.size();
-            int bUsers = BM.size();
+            int aUsers = (AM.size() > 0 ? AM.size() : 1);
+            int bUsers = (BM.size() > 0 ? BM.size() : 1);
 
             double aSupplyDays = aBlood + 1 / aUsers;
             double bSupplyDays = bBlood + 1 / bUsers;
@@ -337,9 +337,8 @@ public class PatientBloodSearch {
         LinkedList<Integer> AP = BinarySearch.bSearchBloodType(sortedlist, "A+", 0, sortedlist.size() - 1);
         LinkedList<Integer> BP = BinarySearch.bSearchBloodType(sortedlist, "B+", 0, sortedlist.size() - 1);
 
-        int aUsers = AM.size() + AP.size();
-        int bUsers = BM.size() + BP.size();
-
+        int aUsers = (AM.size() > 0 ? AM.size() : 1) + (AP.size() > 0 ? AP.size() : 1);
+        int bUsers = (BM.size() > 0 ? BM.size() : 1) + (BP.size() > 0 ? BP.size() : 1);
 
         double aSupplyDays = aBlood + 1 / aUsers;
         double bSupplyDays = bBlood + 1 / bUsers;

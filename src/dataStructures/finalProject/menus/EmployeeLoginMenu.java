@@ -1,9 +1,9 @@
 package dataStructures.finalProject.menus;
 
-import dataStructures.finalProject.utilities.Utils;
 import dataStructures.finalProject.employee.Employee;
 import dataStructures.finalProject.employee.EmployeeBinarySearch;
 import dataStructures.finalProject.utilities.ConsoleColors;
+import dataStructures.finalProject.utilities.Utils;
 
 import java.io.*;
 import java.util.HashMap;
@@ -39,9 +39,9 @@ public class EmployeeLoginMenu {
         try {
             Utils.empIdPointer = reader.nextInt();
             while (reader.hasNextLine()) {
-                String flag = reader.next();
+                String flag = Utils.convertDashesToSpaces(reader.next());
                 if (!flag.equalsIgnoreCase("login")) {
-                    employeeList.add(new Employee(flag, reader.next(), reader.next(), reader.nextInt()));
+                    employeeList.add(new Employee(flag, Utils.convertDashesToSpaces(reader.next()), Utils.convertDashesToSpaces(reader.next()), reader.nextInt()));
                 } else if (reader.hasNextLine()) {
                     reader.nextLine();
                     break;
@@ -60,7 +60,7 @@ public class EmployeeLoginMenu {
                 new FileOutputStream("src/Employee List"), "utf-8"))) {
             writer.write(String.valueOf(Utils.empIdPointer));
             for (Employee e : employeeList) {
-                writer.write("\n" + e.getFirstName() + " " + e.getLastName() + " " + e.getUserName() + " " + e.getEmpId());
+                writer.write("\n" + Utils.convertSpacesToDashes(e.getFirstName()) + " " + Utils.convertSpacesToDashes(e.getLastName()) + " " + e.getUserName() + " " + e.getEmpId());
             }
             writer.write("\nLogin");
             for (String k : employeePasswords.keySet()) {
@@ -135,10 +135,17 @@ public class EmployeeLoginMenu {
     private boolean login() {
         boolean login = false;
         int loginTries = 0;
+        Utils.input.nextLine();
         System.out.print("\nUser Name: ");
-        String username = Utils.input.next();
+        String username = Utils.input.nextLine();
         System.out.print("Password: ");
-        String password = Utils.input.next();
+        String password = Utils.input.nextLine();
+        for (int i = 0; i < username.length(); i++) {
+            if (username.charAt(i) == ' ') {
+                System.out.println(ConsoleColors.RED + "\n*** The username or password is incorrect. Try again. ***" + ConsoleColors.RESET);
+                return login;
+            }
+        }
         if (!employeePasswords.containsKey(username)) {
             System.out.println(ConsoleColors.RED + "\n*** The username or password is incorrect. Try again. ***" + ConsoleColors.RESET);
             return login;
@@ -149,7 +156,7 @@ public class EmployeeLoginMenu {
                 System.out.println(ConsoleColors.RED + "\n*** Incorrect password. Try again. ***" + ConsoleColors.RESET);
                 System.out.print("\nUser Name: " + ConsoleColors.BLUE + username + ConsoleColors.RESET);
                 System.out.print("\nPassword: ");
-                password = Utils.input.next();
+                password = Utils.input.nextLine();
             } else {
                 System.out.println(ConsoleColors.RED + "\n***Too many login failures. You will need to start over. ***" + ConsoleColors.RESET);
                 return login;
@@ -162,12 +169,13 @@ public class EmployeeLoginMenu {
     }
 
     private Employee createEmployee() {
+        Utils.input.nextLine();
         System.out.print("\nFirst Name: ");
-        String firstName = Utils.input.next();
+        String firstName = Utils.input.nextLine();
         System.out.print("Last Name: ");
-        String lastName = Utils.input.next();
+        String lastName = Utils.input.nextLine();
         System.out.print("Username: ");
-        String username = Utils.input.next();
+        String username = Utils.input.nextLine();
         String password1 = "a";
         String password2 = "b";
         int numTries = 0;
@@ -177,9 +185,9 @@ public class EmployeeLoginMenu {
                 return null;
             }
             System.out.print("\nPassword: ");
-            password1 = Utils.input.next();
+            password1 = Utils.input.nextLine();
             System.out.print("Confirm Password: ");
-            password2 = Utils.input.next();
+            password2 = Utils.input.nextLine();
             if (!password1.equals(password2)) {
                 numTries++;
                 if (numTries < 3) {
@@ -271,59 +279,59 @@ public class EmployeeLoginMenu {
     }
 
     private void resetPassword() {
-        System.out.print(ConsoleColors.CYAN + "\nWhat is your username?" + ConsoleColors.RESET + "\n\tUsername: " + ConsoleColors.RESET);
-        String username = Utils.input.next();
+        String username;
         Employee employee;
-        if (employeePasswords.containsKey(username)) {
-            employee = employeeList.get(EmployeeBinarySearch.bSearchUsername(employeeList, username, 0, employeeList.size() - 1).get(0));
-            System.out.println(ConsoleColors.CYAN + "\nWould you like to reset " + employee.getFirstName() + " " + employee.getLastName() + "'s password?" + ConsoleColors.RESET);
-            System.out.println("\t1. Yes\n\t2. No");
-        } else {
-            System.out.println(ConsoleColors.RED + "\n*** There are no employees with that username. Please try again .***" + ConsoleColors.RESET);
-            return;
-        }
         int response;
-        try {
-            response = Integer.parseInt(Utils.input.next());
-        } catch (NumberFormatException e) {
-            System.out.println(ConsoleColors.RED + "\n*** Not a valid command. Please try again. ***" + ConsoleColors.RESET);
-            resetPassword();
-            return;
-        }
-        if (response < 1 || response > 2) {
-            System.out.println(ConsoleColors.RED + "\n*** Not a valid command. Please try again. ***" + ConsoleColors.RESET);
-            resetPassword();
-            return;
-        } else {
-            switch (response) {
-                case 1:
+
+        System.out.print(ConsoleColors.CYAN + "\nWhat is your username?" + ConsoleColors.RESET + "\n\tUsername: " + ConsoleColors.RESET);
+        Utils.input.nextLine();
+        username = Utils.input.nextLine();
+        while (true) {
+            if (employeePasswords.containsKey(username)) {
+                employee = employeeList.get(EmployeeBinarySearch.bSearchUsername(employeeList, username, 0, employeeList.size() - 1).get(0));
+                System.out.println(ConsoleColors.CYAN + "\nWould you like to reset " + employee.getFirstName() + " " + employee.getLastName() + "'s password?" + ConsoleColors.RESET);
+                System.out.println("\t1. Yes\n\t2. No");
+            } else {
+                System.out.println(ConsoleColors.RED + "\n*** There are no employees with that username. Please try again .***" + ConsoleColors.RESET);
+                return;
+            }
+            try {
+                response = Integer.parseInt(Utils.input.nextLine());
+                if (response == 1) {
                     String password1 = "a";
                     String password2 = "b";
                     int numTries = 0;
                     while (!password1.equals(password2)) {
                         if (numTries >= 3) {
                             System.out.println(ConsoleColors.RED + "\n*** Too many failures. You will need to start over. ***" + ConsoleColors.RESET);
-                            break;
+                            return;
                         }
                         System.out.print("\nNew Password: ");
-                        password1 = Utils.input.next();
+                        password1 = Utils.input.nextLine();
                         System.out.print("Confirm Password: ");
-                        password2 = Utils.input.next();
+                        password2 = Utils.input.nextLine();
                         if (!password1.equals(password2)) {
                             numTries++;
                             if (numTries < 3) {
                                 System.out.println(ConsoleColors.RED + "\n*** Passwords do not match. Try again. ***" + ConsoleColors.RESET);
+                                continue;
                             }
                         }
                     }
                     long passwordLong = hashPassword(password1);
                     employeePasswords.put(employee.getUserName(), passwordLong);
                     System.out.println(ConsoleColors.YELLOW + "\n\t" + employee.getFirstName() + " " + employee.getLastName() + "'s password has been updated." + ConsoleColors.RESET);
-                    break;
-                case 2:
+                } else if (response == 2) {
                     System.out.println(ConsoleColors.YELLOW + "\n\t" + employee.getFirstName() + " " + employee.getLastName() + "'s password has not been updated." + ConsoleColors.RESET);
-                    break;
+                } else {
+                    System.out.println(ConsoleColors.RED + "\n*** Not a valid command. Please try again. ***" + ConsoleColors.RESET);
+                    continue;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println(ConsoleColors.RED + "\n*** Not a valid input. Please try again. ***" + ConsoleColors.RESET);
+                continue;
             }
+            break;
         }
     }
 
@@ -345,27 +353,26 @@ public class EmployeeLoginMenu {
                     } else {
                         switch (response) {
                             case 1:
-                                int id;
                                 System.out.print("\nID of Employee: ");
-                                id = Integer.parseInt(Utils.input.next());
+                                int id = Integer.parseInt(Utils.input.next());
                                 searchResults = EmployeeBinarySearch.bSearchID(employeeList, id, 0, employeeList.size() - 1);
                                 if (searchResults.isEmpty()) {
                                     System.out.println(ConsoleColors.RED + "\n*** There are no employees with this ID ***" + ConsoleColors.RESET);
                                 }
                                 break;
                             case 2:
-                                String lastName;
+                                Utils.input.nextLine();
                                 System.out.print("\nLast Name: ");
-                                lastName = Utils.input.next();
+                                String lastName = Utils.input.nextLine();
                                 searchResults = EmployeeBinarySearch.bSearchLastName(employeeList, lastName, 0, employeeList.size() - 1);
                                 if (searchResults.isEmpty()) {
                                     System.out.println(ConsoleColors.RED + "\n*** There are no employees with this last name ***" + ConsoleColors.RESET);
                                 }
                                 break;
                             case 3:
-                                String username;
+                                Utils.input.nextLine();
                                 System.out.print("\nUsername: ");
-                                username = Utils.input.next();
+                                String username = Utils.input.nextLine();
                                 searchResults = EmployeeBinarySearch.bSearchUsername(employeeList, username, 0, employeeList.size() - 1);
                                 if (searchResults.isEmpty()) {
                                     System.out.println(ConsoleColors.RED + "\n*** There are no employees that use this username ***" + ConsoleColors.RESET);
