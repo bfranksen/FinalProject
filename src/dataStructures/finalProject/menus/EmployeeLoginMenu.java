@@ -178,11 +178,41 @@ public class EmployeeLoginMenu {
         String firstName = Utils.input.nextLine();
         System.out.print("Last Name: ");
         String lastName = Utils.input.nextLine();
-        System.out.print("Username: ");
-        String username = Utils.input.nextLine();
+        String username;
+        int numTries = 0;
+
+        while (true) {
+            if (numTries > 2) {
+                System.out.println(ConsoleColors.RED + "\n*** Too many failed attempts. You will need to start over. ***" + ConsoleColors.RESET);
+                return null;
+            } else {
+                String tempName = "";
+                System.out.print("Username: ");
+                username = Utils.input.nextLine();
+                for (int i = 0; i < username.length(); i++) {
+                    tempName = tempName + username.charAt(i);
+                    if (username.charAt(i) == ' ') {
+                        if (numTries == 2) {
+                            numTries++;
+                            break;
+                        } else {
+                            System.out.println(ConsoleColors.RED + "\n*** You cannot have spaces in your username. Please try again. ***\n" + ConsoleColors.RESET);
+                            numTries++;
+                            break;
+                        }
+                    }
+                }
+                if (!tempName.equalsIgnoreCase(username)) {
+                    continue;
+                } else {
+                    break;
+                }
+            }
+        }
+
         String password1 = "a";
         String password2 = "b";
-        int numTries = 0;
+        numTries = 0;
         while (!password1.equals(password2)) {
             if (numTries >= 3) {
                 System.out.println(ConsoleColors.RED + "\n*** Too many failures. You will need to start over. ***" + ConsoleColors.RESET);
