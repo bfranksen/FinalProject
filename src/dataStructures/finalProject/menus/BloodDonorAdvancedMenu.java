@@ -38,7 +38,7 @@ public class BloodDonorAdvancedMenu {
     private boolean menuOptions() {
         int response;
         try {
-            System.out.print(ConsoleColors.YELLOW_BOLD + "\n\n Blood Donor Advanced Options\n------------------------------" + ConsoleColors.RESET);
+            System.out.print(ConsoleColors.YELLOW + "\n\n Blood Donor Advanced Options\n------------------------------" + ConsoleColors.RESET);
             System.out.println(ConsoleColors.CYAN + "\nWhat would you like to do?" + ConsoleColors.RESET);
             System.out.println("\t1. Checkout Blood For Patient");
             System.out.println("\t2. Arrange for Transfer");

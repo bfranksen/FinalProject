@@ -156,7 +156,7 @@ public class MainMenu {
     private boolean menuOptions() {
         try {
             int response;
-            System.out.print(ConsoleColors.YELLOW_BOLD + "\n\n Main Menu\n-----------" + ConsoleColors.RESET);
+            System.out.print(ConsoleColors.YELLOW + "\n\n Main Menu\n-----------" + ConsoleColors.RESET);
             System.out.println(ConsoleColors.CYAN + "\nWhat would you like to work on?" + ConsoleColors.RESET);
             System.out.println("\t1. Patient Info");
             System.out.println("\t2. Organ Transplant List");

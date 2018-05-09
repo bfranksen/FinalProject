@@ -39,7 +39,7 @@ public class BloodDonorMenu {
     private boolean menuOptions() {
         int response;
         try {
-            System.out.print(ConsoleColors.YELLOW_BOLD + "\n\n Blood Donor List\n------------------" + ConsoleColors.RESET);
+            System.out.print(ConsoleColors.YELLOW + "\n\n Blood Donor List\n------------------" + ConsoleColors.RESET);
             System.out.println(ConsoleColors.CYAN + "\nWhat would you like to do?" + ConsoleColors.RESET);
             System.out.println("\t1. Add Patient");
             System.out.println("\t2. Remove Patient");

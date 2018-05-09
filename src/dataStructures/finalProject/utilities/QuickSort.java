@@ -379,9 +379,9 @@ public class QuickSort {
 
         if (willingResult != 0) {
             return willingResult;
+        } else {
+            return -(p1.getPatientBloodInfo().getBloodType().compareToIgnoreCase(p2.getPatientBloodInfo().getBloodType()));
         }
-
-        return -p1.getPatientBloodInfo().getBloodType().compareToIgnoreCase(p2.getPatientBloodInfo().getBloodType());
     }
 
     private static int compareEligibleAndWillingDonors(Patient p1, Patient p2) {
