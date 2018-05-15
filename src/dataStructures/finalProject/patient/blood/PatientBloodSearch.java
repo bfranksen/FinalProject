@@ -197,7 +197,7 @@ public class PatientBloodSearch {
 
         }
 
-        diffBlood = BloodSearch3(BloodyA, bloodIndex, bloodAmountNeeded, diffBlood, sortedList);
+        diffBlood = BloodSearch3(BloodyA, bloodIndex, bloodLeft, diffBlood, sortedList);
 
         return diffBlood;
 

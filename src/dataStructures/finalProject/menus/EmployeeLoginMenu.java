@@ -173,10 +173,14 @@ public class EmployeeLoginMenu {
     }
 
     private Employee createEmployee() {
-        Utils.input.nextLine();
-        System.out.print("\nFirst Name: ");
+        if (!grantPermission()) {
+            return null;
+        }
+
+        System.out.print(ConsoleColors.CYAN + "\nEnter your information\n" + ConsoleColors.RESET);
+        System.out.print("\tFirst Name: ");
         String firstName = Utils.input.nextLine();
-        System.out.print("Last Name: ");
+        System.out.print("\tLast Name: ");
         String lastName = Utils.input.nextLine();
         String username;
         int numTries = 0;
@@ -187,7 +191,7 @@ public class EmployeeLoginMenu {
                 return null;
             } else {
                 String tempName = "";
-                System.out.print("Username: ");
+                System.out.print("\tUsername: ");
                 username = Utils.input.nextLine();
                 for (int i = 0; i < username.length(); i++) {
                     tempName = tempName + username.charAt(i);
@@ -223,9 +227,9 @@ public class EmployeeLoginMenu {
                 System.out.println(ConsoleColors.RED + "\n*** Too many failures. You will need to start over. ***" + ConsoleColors.RESET);
                 return null;
             }
-            System.out.print("\nPassword: ");
+            System.out.print("\n\tPassword: ");
             password1 = Utils.input.nextLine();
-            System.out.print("Confirm Password: ");
+            System.out.print("\tConfirm Password: ");
             password2 = Utils.input.nextLine();
             if (!password1.equals(password2)) {
                 numTries++;
@@ -239,13 +243,17 @@ public class EmployeeLoginMenu {
         employeeList.add(employee);
         long passwordLong = hashPassword(password1);
         employeePasswords.put(employee.getUserName(), passwordLong);
-        System.out.println(ConsoleColors.YELLOW + "\n\t" + employee.getFirstName() + " " + employee.getLastName() + " added to employee database." +
-                ConsoleColors.BLUE + "\n\t\tUser Name: \t\t" + ConsoleColors.RESET + employee.getUserName() +
-                ConsoleColors.BLUE + "\n\t\tEmployee ID: \t" + ConsoleColors.RESET + employee.getEmpId());
+        System.out.println(ConsoleColors.YELLOW + "\n" + employee.getFirstName() + " " + employee.getLastName() + " added to employee database." +
+                ConsoleColors.BLUE + "\n\tUser Name: \t\t" + ConsoleColors.RESET + employee.getUserName() +
+                ConsoleColors.BLUE + "\n\tEmployee ID: \t" + ConsoleColors.RESET + employee.getEmpId());
         return employee;
     }
 
     private Employee removeEmployee() {
+        if (!grantPermission()) {
+            return null;
+        }
+
         LinkedList<Integer> searchResults = searchForEmployee();
         Employee[] removeCandidates = new Employee[searchResults.size()];
         Employee removedEmployee;
@@ -261,7 +269,7 @@ public class EmployeeLoginMenu {
                 employeeList.remove(removedEmployee);
                 employeePasswords.remove(removedEmployee.getUserName());
                 if (removedEmployee != null)
-                    System.out.println(ConsoleColors.YELLOW + "\n\tEmployee " + removedEmployee.getFirstName() + " " + removedEmployee.getLastName() + " has been removed." + ConsoleColors.RESET);
+                    System.out.println(ConsoleColors.YELLOW + "\nEmployee " + removedEmployee.getFirstName() + " " + removedEmployee.getLastName() + " has been removed." + ConsoleColors.RESET);
             } else {
                 removedEmployee = null;
                 System.out.println(ConsoleColors.YELLOW + "\n\tNo changes have been made.");
@@ -286,7 +294,7 @@ public class EmployeeLoginMenu {
                             employeeList.remove(removedEmployee);
                             employeePasswords.remove(removedEmployee.getUserName());
                             if (removedEmployee != null)
-                                System.out.println(ConsoleColors.YELLOW + "\n\tEmployee " + removedEmployee.getFirstName() + " " + removedEmployee.getLastName() + " has been removed." + ConsoleColors.RESET);
+                                System.out.println(ConsoleColors.YELLOW + "\nEmployee " + removedEmployee.getFirstName() + " " + removedEmployee.getLastName() + " has been removed." + ConsoleColors.RESET);
                         } else {
                             removedEmployee = null;
                             System.out.println(ConsoleColors.YELLOW + "\n\tNo changes have been made.");
@@ -429,12 +437,36 @@ public class EmployeeLoginMenu {
         return searchResults;
     }
 
-    private long hashPassword(String password) {
-        long pass = 31;
-        for (int i = 0; i < password.length(); i++) {
-            pass = (pass * 13) + (31 * Character.valueOf(password.charAt(i)));
+    private Boolean grantPermission() {
+        System.out.print(ConsoleColors.CYAN + "\nYou need permission from the administrator to perform this task.\n" + ConsoleColors.RESET);
+        System.out.print("\tUsername: " + ConsoleColors.BLUE + "admin\n" + ConsoleColors.RESET);
+        System.out.print("\tPassword: ");
+        Utils.input.nextLine();
+
+        String password = Utils.input.nextLine();
+        int loginTries = 0;
+
+        while (hashPassword(password) != employeePasswords.get("admin")) {
+            loginTries++;
+            if (loginTries < 3) {
+                System.out.println(ConsoleColors.RED + "\n*** Incorrect password. Try again. ***" + ConsoleColors.RESET);
+                System.out.print("\tUser Name: " + ConsoleColors.BLUE + "admin\n" + ConsoleColors.RESET);
+                System.out.print("\tPassword: ");
+                password = Utils.input.nextLine();
+            } else {
+                System.out.println(ConsoleColors.RED + "\n***Too many login failures. You will need to start over. ***" + ConsoleColors.RESET);
+                return false;
+            }
         }
-        return pass;
+        return true;
+    }
+
+    private long hashPassword(String password) {
+        long hashedPass = 13;
+        for (int i = 0; i < password.length(); i++) {
+            hashedPass = hashedPass * 31 + password.charAt(i);
+        }
+        return hashedPass;
     }
 
     public LinkedList<Employee> getEmployeeList() {
