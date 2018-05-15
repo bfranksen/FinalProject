@@ -210,6 +210,11 @@ public class EmployeeLoginMenu {
             }
         }
 
+        if (employeePasswords.containsKey(username)) {
+            System.out.println(ConsoleColors.RED + "\n*** This username is taken. Please try again. ***" + ConsoleColors.RESET);
+            return null;
+        }
+
         String password1 = "a";
         String password2 = "b";
         numTries = 0;
