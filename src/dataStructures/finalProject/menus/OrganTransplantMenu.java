@@ -35,7 +35,7 @@ public class OrganTransplantMenu {
     private boolean menuOptions() {
         try {
             int response;
-            System.out.print(ConsoleColors.YELLOW_BOLD + "\n\n Organ Transplant List\n-----------------------" + ConsoleColors.RESET);
+            System.out.print(ConsoleColors.YELLOW + "\n\n Organ Transplant List\n-----------------------" + ConsoleColors.RESET);
             System.out.println(ConsoleColors.CYAN + "\nWhat would you like to do?" + ConsoleColors.RESET);
             System.out.println("\t1. Add Patient");
             System.out.println("\t2. Remove Patient");
