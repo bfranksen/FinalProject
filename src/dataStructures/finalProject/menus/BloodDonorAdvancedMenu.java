@@ -188,7 +188,7 @@ public class BloodDonorAdvancedMenu {
 
         bloodType = bloodDonorMenu.askForPatientBloodType(ConsoleColors.CYAN + "\nWhich blood type do you need?" + ConsoleColors.RESET);
         while (true) {
-            System.out.println(ConsoleColors.CYAN + "\nIs this blood for a specific patient?" + ConsoleColors.RESET + "\n\t1. Yes\n\t2. No");
+            System.out.println(ConsoleColors.CYAN + "\nIs this blood for a specific patient?" + ConsoleColors.RESET + "\n\t1. Yes\n\t2. No\n");
             Utils.input.nextLine();
             response = Utils.input.nextLine();
             if (response.equalsIgnoreCase("1")) {
