@@ -90,7 +90,7 @@ public class OrganTransplantMenu {
 
         while (true) {
             System.out.println(ConsoleColors.CYAN + "\nCreate new patient or add existing patient?" + ConsoleColors.RESET);
-            System.out.println("\t1. Create new patient\n\t2. Add existing patient");
+            System.out.println("\t1. Create new patient\n\t2. Add existing patient\n");
             try {
                 int response = Integer.parseInt(Utils.input.next());
                 if (response == 1) {
@@ -114,6 +114,7 @@ public class OrganTransplantMenu {
     }
 
     private Patient addNewPatient(Patient newPatient) {
+        Utils.input.nextLine();
         System.out.print("\nOrgan Needed: ");
         String organ = Utils.input.nextLine();
         int urgency;
@@ -132,6 +133,9 @@ public class OrganTransplantMenu {
             }
         }
         newPatient.setPatientOrganInfo(new PatientOrganInfo(organ, urgency));
+        if (newPatient != null)
+            System.out.println(ConsoleColors.YELLOW + "\n\t" + newPatient.getFirstName() + " " + newPatient.getLastName() + " added to the organ transplant list.\n\t" +
+                    "Patient ID: " + newPatient.getId() + ConsoleColors.RESET);
         return newPatient;
     }
 
@@ -210,9 +214,6 @@ public class OrganTransplantMenu {
                 }
             }
         }
-        if (newPatient != null)
-            System.out.println(ConsoleColors.YELLOW + "\n\t" + newPatient.getFirstName() + " " + newPatient.getLastName() + " added to the organ transplant list.\n\t" +
-                    "Patient ID: " + newPatient.getId() + ConsoleColors.RESET);
         return newPatient;
     }
 

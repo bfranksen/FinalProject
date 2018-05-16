@@ -229,8 +229,6 @@ public class PatientBloodSearch {
         BloodyA[bloodIndex].setBloodUnitAmount(BloodyA[bloodIndex].getBloodUnitAmount() + placeholder);
 
 
-        ;
-
         //O or  at the start  Top
         if (BloodyA[bloodIndex].getFirstChild() == null) {
             if (BloodyA[bloodIndex].getParallelCousin() == null) {
@@ -372,13 +370,4 @@ public class PatientBloodSearch {
 
         return diffBlood;
     }
-
-
 }
-
-
-
-
-
-
-

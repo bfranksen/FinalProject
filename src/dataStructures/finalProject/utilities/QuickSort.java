@@ -345,9 +345,9 @@ public class QuickSort {
         int urgencyResult;
 
         if (p1.getPatientOrganInfo().getUrgency() > p2.getPatientOrganInfo().getUrgency()) {
-            urgencyResult = -1;
-        } else if (p1.getPatientOrganInfo().getUrgency() < p2.getPatientOrganInfo().getUrgency()) {
             urgencyResult = 1;
+        } else if (p1.getPatientOrganInfo().getUrgency() < p2.getPatientOrganInfo().getUrgency()) {
+            urgencyResult = -1;
         } else {
             urgencyResult = 0;
         }
@@ -404,4 +404,3 @@ public class QuickSort {
         return -p1.getPatientBloodInfo().getBloodType().compareToIgnoreCase(p2.getPatientBloodInfo().getBloodType());
     }
 }
-

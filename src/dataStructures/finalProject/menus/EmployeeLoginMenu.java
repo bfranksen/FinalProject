@@ -269,7 +269,7 @@ public class EmployeeLoginMenu {
                 employeeList.remove(removedEmployee);
                 employeePasswords.remove(removedEmployee.getUserName());
                 if (removedEmployee != null)
-                    System.out.println(ConsoleColors.YELLOW + "\nEmployee " + removedEmployee.getFirstName() + " " + removedEmployee.getLastName() + " has been removed." + ConsoleColors.RESET);
+                    System.out.println(ConsoleColors.YELLOW + "\n\tEmployee " + removedEmployee.getFirstName() + " " + removedEmployee.getLastName() + " has been removed." + ConsoleColors.RESET);
             } else {
                 removedEmployee = null;
                 System.out.println(ConsoleColors.YELLOW + "\n\tNo changes have been made.");
@@ -294,7 +294,7 @@ public class EmployeeLoginMenu {
                             employeeList.remove(removedEmployee);
                             employeePasswords.remove(removedEmployee.getUserName());
                             if (removedEmployee != null)
-                                System.out.println(ConsoleColors.YELLOW + "\nEmployee " + removedEmployee.getFirstName() + " " + removedEmployee.getLastName() + " has been removed." + ConsoleColors.RESET);
+                                System.out.println(ConsoleColors.YELLOW + "\n\tEmployee " + removedEmployee.getFirstName() + " " + removedEmployee.getLastName() + " has been removed." + ConsoleColors.RESET);
                         } else {
                             removedEmployee = null;
                             System.out.println(ConsoleColors.YELLOW + "\n\tNo changes have been made.");

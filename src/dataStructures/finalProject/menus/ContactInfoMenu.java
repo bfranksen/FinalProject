@@ -195,7 +195,11 @@ public class ContactInfoMenu {
 
     private Patient updateContactInfo() {
         LinkedList<Integer> searchResults = searchForPatient();
+        Patient[] updateCandidates = new Patient[searchResults.size()];
         Patient updatedPatient = null;
+
+        int tempPatientIndex;
+        int chosenPatient;
 
         if (searchResults.size() == 0) {
             // Search method takes care of this
@@ -208,6 +212,44 @@ public class ContactInfoMenu {
                         System.out.println(ConsoleColors.YELLOW + "\n\tPatient " + updatedPatient.getFirstName() + " " + updatedPatient.getLastName() + " has been updated." + ConsoleColors.RESET);
                     } else {
                         System.out.println(ConsoleColors.YELLOW + "\n\tNo changes have been made.");
+                    }
+                    break;
+                } catch (NumberFormatException e) {
+                    System.out.println(ConsoleColors.RED + "\n*** Not a valid input. Please try again. ***" + ConsoleColors.RESET);
+                    continue;
+                }
+            }
+        } else {
+            while (true) {
+                tempPatientIndex = 0;
+                System.out.println(ConsoleColors.CYAN + "\nWhich patient would you like to update?" + ConsoleColors.RESET);
+                for (Integer i : searchResults) {
+                    updateCandidates[tempPatientIndex] = patientLinkedList.get(i);
+                    System.out.println("\t" + (tempPatientIndex + 1) + ". " + updateCandidates[tempPatientIndex]);
+                    tempPatientIndex++;
+                }
+                try {
+                    chosenPatient = Integer.parseInt(Utils.input.next());
+                    if (chosenPatient < 1 || chosenPatient > tempPatientIndex) {
+                        System.out.println(ConsoleColors.RED + "\n*** Not a valid command. Please try again. ***" + ConsoleColors.RESET);
+                        continue;
+                    } else {
+                        while (true) {
+                            try {
+                                updatedPatient = updateCandidates[chosenPatient - 1];
+                                if (Utils.doubleCheck(updatedPatient, "update")) {
+                                    updatePatient(updatedPatient);
+                                    System.out.println(ConsoleColors.YELLOW + "\n\tPatient " + updatedPatient.getFirstName() + " " + updatedPatient.getLastName() + " has been updated." + ConsoleColors.RESET);
+                                } else {
+                                    System.out.println(ConsoleColors.YELLOW + "\n\tNo changes have been made.");
+                                    updatedPatient = null;
+                                }
+                                break;
+                            } catch (NumberFormatException e) {
+                                System.out.println(ConsoleColors.RED + "\n*** Not a valid input. Please try again. ***" + ConsoleColors.RESET);
+                                continue;
+                            }
+                        }
                     }
                     break;
                 } catch (NumberFormatException e) {

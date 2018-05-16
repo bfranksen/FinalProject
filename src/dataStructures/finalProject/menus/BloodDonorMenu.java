@@ -98,7 +98,7 @@ public class BloodDonorMenu {
 
         while (true) {
             System.out.println(ConsoleColors.CYAN + "\nCreate new patient or add existing patient?" + ConsoleColors.RESET);
-            System.out.println("\t1. Create new patient\n\t2. Add existing patient");
+            System.out.println("\t1. Create new patient\n\t2. Add existing patient\n");
             try {
                 int response = Integer.parseInt(Utils.input.next());
                 if (response == 1) {

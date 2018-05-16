@@ -67,7 +67,6 @@ public class MainMenu {
             }
             while (reader.hasNextLine()) {
                 String next = Utils.convertDashesToSpaces(reader.next());
-                ;
                 if (next.equalsIgnoreCase("organ")) {
                     reader.nextLine();
                 } else if (next.equalsIgnoreCase("blood")) {
