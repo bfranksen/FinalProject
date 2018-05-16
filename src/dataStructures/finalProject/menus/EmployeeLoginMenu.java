@@ -468,8 +468,4 @@ public class EmployeeLoginMenu {
         }
         return hashedPass;
     }
-
-    public LinkedList<Employee> getEmployeeList() {
-        return employeeList;
-    }
 }
