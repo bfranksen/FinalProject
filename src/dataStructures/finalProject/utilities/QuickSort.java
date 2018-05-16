@@ -357,7 +357,6 @@ public class QuickSort {
         }
 
         return p1.getPatientOrganInfo().getOrgan().compareToIgnoreCase(p2.getPatientOrganInfo().getOrgan());
-
     }
 
     private static int compareEligibleDonors(Patient p1, Patient p2) {

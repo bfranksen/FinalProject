@@ -462,10 +462,10 @@ public class EmployeeLoginMenu {
     }
 
     private long hashPassword(String password) {
-        long hashedPass = 13;
+        long hashedPassword = 13;
         for (int i = 0; i < password.length(); i++) {
-            hashedPass = hashedPass * 31 + password.charAt(i);
+            hashedPassword = hashedPassword * 31 + password.charAt(i);
         }
-        return hashedPass;
+        return hashedPassword;
     }
 }
